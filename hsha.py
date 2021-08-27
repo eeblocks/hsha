@@ -9,12 +9,19 @@ import os
 import getpass
 
 
+# Colors
+class Colors:
+    WHITE = "\033[37m"
+    RED = "\033[31m"
+    MAGENTA = "\033[32m"
+
+
 # Welcome
 def welcome():
     os.system('cls' if os.name == 'nt' else 'clear')
 
     banner = open('banner.txt', 'r').read()
-    print(banner)
+    print(f'{Colors.MAGENTA}{banner}{Colors.WHITE}\n')
 
 
 # Hash Function
@@ -28,7 +35,12 @@ def hashing(s):
 if __name__ == '__main__':
     welcome()
 
-    choice = input('$ Hash Mode $\n\n[1] File\n[2] Text\n\n> ').lower()
+    print('-------------')
+    print('$ Hash Mode $')
+    print('-------------\n')
+    print('[1] File')
+    print('[2] Text\n\n> ', end='')
+    choice = input().lower()
 
     if choice == '1' or choice == 'file' or choice == 'f':
         welcome()
@@ -40,7 +52,7 @@ if __name__ == '__main__':
         print(f'Current directory:\n{d}')
 
         while True:
-            it = input(f'\n[+] File route: ').lower().replace(' ', '')
+            it = input(f'\n[+] File route: ').lower()
 
             if it == 'help*' or it == 'h*':
                 print(' \ndownloads* / d* > Goes to the download directory')
@@ -49,22 +61,25 @@ if __name__ == '__main__':
                 down = input('[+] Download name: ')
                 i = f'C:/Users/{getpass.getuser()}/Downloads/{down}'
                 break
+
             else:
                 i = it
                 break
+
 
         # Open & Read the file
         try:
             s = open(i, 'r', encoding='cp850').read()
         except:
-            print("\nCan't open the file...")
+            print(f"\n{Colors.RED}Can't open the file...{Colors.WHITE}")
             exit()
 
     elif choice == '2' or choice == 'text' or choice == 't':
         welcome()
-        s = input('\n[+] Text: ')
+        s = input('[+] Text: ')
 
     else:
         exit()
 
     hashing(s)
+    
