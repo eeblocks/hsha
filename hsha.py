@@ -1,14 +1,17 @@
 #!/usr/bin/python3
-# hsha v1.2
+# hsha v1.3
 
 # Dependencies
 from hashlib import sha256
 from sys import exit
-from time import sleep, time
+from time import time
 
 import os
 import getpass
 import argparse
+
+if os.name == 'nt':
+    import win32clipboard
 
 # Colors
 class Colors:
@@ -16,16 +19,18 @@ class Colors:
     RED = "\033[31m"
     GREEN = "\033[32m"
 
+# Set title on the terminal
+os.system('title hsha' if os.name == 'nt' else 'echo -en "\033]0;hsha\a"')
 
-# Welcome
-def welcome():
+# Clear terminal
+def refresh():
     os.system('cls' if os.name == 'nt' else 'clear')
 
     banner = open('banner.txt', 'r', encoding='utf-8').read()
     print(f'{Colors.GREEN}{banner}{Colors.WHITE}\n')
 
 
-welcome()
+refresh()
 
 
 # Argument Settings
@@ -38,7 +43,7 @@ args = parser.parse_args()
 # Hash Function
 def hashing(s):
 
-    welcome()
+    refresh()
 
     start_time = time()
     encoded = sha256(s.encode()).hexdigest()
@@ -49,11 +54,26 @@ def hashing(s):
     print(encoded)
     print(f'\nTime elapsed: {Colors.GREEN}{round(elapsed, 2)}s{Colors.WHITE}')
     
+    if os.name == 'nt':
+        
+        # Access to the Windows clipboard
+        win32clipboard.OpenClipboard()
+        win32clipboard.EmptyClipboard()
 
-# Text Function
+        # Set hash to Windows clipboard
+        win32clipboard.SetClipboardText(encoded)
+
+        # Close the windows clipboard
+        win32clipboard.CloseClipboard()
+
+        print('\n(Hash copied to clipboard)')
+    
+
+# Args Text Function
 def text(t):
     hashing(t)
 
+# Args File Function
 def file(f):
 
     try:
@@ -66,6 +86,7 @@ def file(f):
 # Main
 if __name__ == '__main__':
 
+    # Check args
     if args.text:
         text(args.text)
         exit()
@@ -74,15 +95,19 @@ if __name__ == '__main__':
         file(args.file)
         exit()
 
+    # Normal mode
     print('-------------')
     print('$ Hash Mode $')
     print('-------------\n')
+
     print('[1] File')
     print('[2] Text\n\n> ', end='')
+
     choice = input().lower()
 
+    # File Option
     if choice == '1' or choice == 'file' or choice == 'f':
-        welcome()
+        refresh()
 
         # Get current dir
         os.chdir(os.path.dirname(__file__))
@@ -91,16 +116,19 @@ if __name__ == '__main__':
         print(f'Current directory:\n{d}')
 
         print('\n(help*)')
+
         while True:
             
-            it = input(f'\n[+] File route: ').lower()
+            iroute = input(f'\n[+] File route: ').lower()
 
-            if it == 'help*' or it == 'h*':
-                welcome()
+            # Help command
+            if iroute == 'help*' or iroute == 'h*':
+                refresh()
                 print(' \ndownloads* / d* > Goes to the download directory')
 
-            elif it == 'downloads*' or it == 'd*':
-                welcome()
+            # Go to the downloads directory
+            elif iroute == 'downloads*' or iroute == 'd*':
+                refresh()
 
                 print(f'Current directory:\nC:/Users/{getpass.getuser()}/Downloads/\n')
                 
@@ -109,22 +137,24 @@ if __name__ == '__main__':
                 break
 
             else:
-                i = it
+                route = iroute
                 break
 
 
         # Open & Read the file
         try:
-            s = open(i, 'r', encoding='cp850').read()
+            content = open(route, 'r', encoding='cp850').read()
         except:
             print(f"\n{Colors.RED}Can't open the file...{Colors.WHITE}")
             exit()
 
+    # Text Option
     elif choice == '2' or choice == 'text' or choice == 't':
-        welcome()
-        s = input('[+] Text: ')
+        refresh()
+        content = input('[+] Text: ')
 
+    # Exit Option
     else:
         exit()
-
-    hashing(s)
+    
+    hashing(content)
