@@ -133,7 +133,7 @@ if __name__ == '__main__':
                 print(f'Current directory:\nC:/Users/{getpass.getuser()}/Downloads/\n')
                 
                 down = input('[+] Download name: ')
-                i = f'C:/Users/{getpass.getuser()}/Downloads/{down}'
+                iroute = f'C:/Users/{getpass.getuser()}/Downloads/{down}'
                 break
 
             else:
