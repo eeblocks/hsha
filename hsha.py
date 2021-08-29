@@ -133,7 +133,7 @@ if __name__ == '__main__':
                 print(f'Current directory:\nC:/Users/{getpass.getuser()}/Downloads/\n')
                 
                 down = input('[+] Download name: ')
-                iroute = f'C:/Users/{getpass.getuser()}/Downloads/{down}'
+                route = f'C:/Users/{getpass.getuser()}/Downloads/{down}'
                 break
 
             else:
@@ -158,3 +158,4 @@ if __name__ == '__main__':
         exit()
     
     hashing(content)
+    
